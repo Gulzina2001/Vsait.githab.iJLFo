@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>CS Animation</title>
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #111;
+}
+
+/* игровое поле */
+.game {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  cursor: none;
+}
+
+/* прицел */
+.crosshair {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: lime;
+}
+
+.crosshair::before {
+  width: 20px;
+  height: 2px;
+  top: 9px;
+}
+
+.crosshair::after {
+  width: 2px;
+  height: 20px;
+  left: 9px;
+}
+
+/* игрок */
+.player {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: dodgerblue;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 8px;
+}
+
+/* пуля */
+.bullet {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: yellow;
+  border-radius: 50%;
+  opacity: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+  <div class="crosshair"></div>
+  <div class="player"></div>
+  <div class="bullet"></div>
+</div>
+
+<script>
+const player = document.querySelector(".player");
+const bullet = document.querySelector(".bullet");
+
+let mouseX = window.innerWidth / 2;
+let recoil = 0;
+
+/* движение игрока за мышью */
+document.addEventListener("mousemove", (e) => {
+  mouseX = e.clientX;
+  player.style.left = mouseX + "px";
+});
+
+/* выстрел */
+document.addEventListener("click", () => {
+  shoot();
+});
+
+function shoot() {
+  bullet.style.opacity = 1;
+
+  let y = window.innerHeight - 100;
+  bullet.style.left = mouseX + "px";
+
+  function animate() {
+    y -= 15;
+    bullet.style.bottom = y + "px";
+
+    if (y > 0) {
+      requestAnimationFrame(animate);
+    } else {
+      bullet.style.opacity = 0;
+      bullet.style.bottom = "90px";
+    }
+  }
+
+  animate();
+}
+
+/* отдача */
+function recoilAnim() {
+  if (recoil > 0) {
+    player.style.transform = `translateX(-50%) translateY(-${recoil}px)`;
+    recoil -= 0.5;
+  } else {
+    player.style.transform = `translateX(-50%)`;
+  }
+
+  requestAnimationFrame(recoilAnim);
+}
+
+recoilAnim();
+</script>
+
+</body>
+</html>
